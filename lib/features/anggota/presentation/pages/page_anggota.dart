@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyboard_avoider/keyboard_avoider.dart';
 
 class PageAnggota extends StatefulWidget {
   @override
@@ -17,25 +18,29 @@ class _PageAnggotaState extends State<PageAnggota> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Anggota'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              'Anggota',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            ..._members,
-            SizedBox(height: 20),
-            MemberInputField(
-              hintText: 'Tambahkan anggota lain',
-              onTap: _addMemberField,
-            ),
-          ],
+      body: KeyboardAvoider(
+        autoScroll: true,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Text(
+                'Anggota',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
+              ..._members,
+              SizedBox(height: 20),
+              MemberInputField(
+                hintText: 'Tambahkan anggota lain',
+                onTap: _addMemberField,
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
