@@ -7,12 +7,38 @@ class PageAnggota extends StatefulWidget {
 }
 
 class _PageAnggotaState extends State<PageAnggota> {
-  List<Widget> _members = [MemberInputField(hintText: 'Nama')];
+  // Inisialisasi dengan tiga controller default
+  List<TextEditingController> _controllers = [
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController(),
+  ];
 
   void _addMemberField() {
     setState(() {
-      _members.add(MemberInputField(hintText: 'Nama'));
+      _controllers.add(TextEditingController());
     });
+  }
+
+  void _saveMembers() {
+    List<String> memberNames = _controllers
+        .map((controller) => controller.text)
+        .where((text) => text.isNotEmpty)
+        .toList();
+
+    Navigator.pushReplacementNamed(
+      context,
+      '/task',
+      arguments: memberNames,
+    );
+  }
+
+  @override
+  void dispose() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -33,20 +59,26 @@ class _PageAnggotaState extends State<PageAnggota> {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 20),
-              ..._members,
-              SizedBox(height: 20),
-              MemberInputField(
-                hintText: 'Tambahkan anggota lain',
-                onTap: _addMemberField,
-              ),
+              // Menampilkan semua field input
+              ..._controllers.asMap().entries.map((entry) {
+                int index = entry.key;
+                TextEditingController controller = entry.value;
+                return MemberInputField(
+                  controller: controller,
+                  hintText: index == _controllers.length - 1
+                      ? 'Tambahkan anggota lain'
+                      : 'Nama',
+                  onTap: index == _controllers.length - 1
+                      ? _addMemberField
+                      : null,
+                );
+              }).toList(),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Simpan logika anggota
-        },
+        onPressed: _saveMembers,
         child: Icon(Icons.save),
         backgroundColor: Colors.green,
       ),
@@ -57,15 +89,21 @@ class _PageAnggotaState extends State<PageAnggota> {
 class MemberInputField extends StatelessWidget {
   final String hintText;
   final VoidCallback? onTap;
+  final TextEditingController controller;
 
-  const MemberInputField({Key? key, required this.hintText, this.onTap})
-      : super(key: key);
+  const MemberInputField({
+    Key? key,
+    required this.hintText,
+    this.onTap,
+    required this.controller,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: TextField(
+        controller: controller,
         decoration: InputDecoration(
           hintText: hintText,
           border: OutlineInputBorder(),
