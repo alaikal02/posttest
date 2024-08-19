@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
   _navigateToHome() async {
     // Splash screen akan ditampilkan selama 3 detik sebelum berpindah ke halaman berikutnya
     await Future.delayed(Duration(seconds: 3), () {});
-    Navigator.pushReplacementNamed(context, '/second');
+    Navigator.pushReplacementNamed(context, '/anggota');
   }
 
   @override
